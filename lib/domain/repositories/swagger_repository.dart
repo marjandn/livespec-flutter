@@ -1,5 +1,6 @@
+import '../../core/result/result.dart';
 import '../entities/swagger_entity.dart';
 
 abstract class SwaggerRepository {
-  Future<SwaggerEntity> getSwaggerLinkJsonData(String link);
+  Future<Result<SwaggerEntity>> getSwaggerLinkJsonData(String link);
 }
