@@ -33,6 +33,8 @@ void main() {
       final result = await _generateSwaggerMockUseCase.call(validSwaggerLink);
 
       expect(result, isA<Success>().having((e) => e.data, 'data', isA<MockedSwaggerEntity>()));
+      verify(() => _mockSwaggerRepository.generateSwaggerMockUseCase(validSwaggerLink)).called(1);
+      verifyNoMoreInteractions(_mockSwaggerRepository);
     },
   );
 
