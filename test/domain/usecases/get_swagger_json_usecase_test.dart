@@ -16,7 +16,7 @@ void main() {
     swaggerJsonUseCase = GetSwaggerJsonUseCase(mockSwaggerRepository);
   });
 
-  test('Should reutrn Swagger entity when call getSwaggerJsonUseCase with a valid link', () async {
+  test('should return Swagger entity when getSwaggerLinkJsonData is called with valid link', () async {
     const String link = 'http://swagger/v7/swagger.json';
     final swaggerEntity = SwaggerEntity(openapi: "3.0.1", title: "apy API");
     final repoResult = Success<SwaggerEntity>(swaggerEntity);
@@ -29,7 +29,7 @@ void main() {
     expect((result).data?.openapi, '3.0.1');
   });
 
-  test('Should return Failure state when call getSwaggerJsonUseCase with an invalid link', () async {
+  test('should return Failure state when getSwaggerLinkJsonData is called with invalid link', () async {
     const String link = 'http://invalidlink';
     final failureState = Failure<SwaggerEntity>('Swagger link was wrong!');
     when(() => mockSwaggerRepository.getSwaggerLinkJsonData(link)).thenAnswer((_) async => failureState);

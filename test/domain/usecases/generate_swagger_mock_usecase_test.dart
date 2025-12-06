@@ -18,7 +18,7 @@ void main() {
   });
 
   test(
-    'Should return a MockedSwaggerEntity instance when call GenerateSwaggerMockUsecase usecase with a valid link',
+    'should return a MockedSwaggerEntity instance when generateSwaggerMockUseCase is called with valid link',
     () async {
       MockedSwaggerEntity mockedSwagger = MockedSwaggerEntity(
         mockedBaseUrl: 'https://mockedserver.com/api/',
@@ -37,20 +37,17 @@ void main() {
     },
   );
 
-  test(
-    'Should return Failed result when call GenerateSwaggerMockUsecase usecase with an invalid link',
-    () async {
-      const invalidLink = "-";
-      const errorMessage = "Swagger link was wrong!";
-      when(
-        () => mockSwaggerRepository.generateSwaggerMockUseCase(invalidLink),
-      ).thenAnswer((_) async => Failure(errorMessage));
+  test('should return Failed result when generateSwaggerMockUseCase is called with invalid link', () async {
+    const invalidLink = "-";
+    const errorMessage = "Swagger link was wrong!";
+    when(
+      () => mockSwaggerRepository.generateSwaggerMockUseCase(invalidLink),
+    ).thenAnswer((_) async => Failure(errorMessage));
 
-      final result = await generateSwaggerMockUseCase.call(invalidLink);
+    final result = await generateSwaggerMockUseCase.call(invalidLink);
 
-      expect(result, isA<Failure>().having((e) => e.message, 'message', errorMessage));
-      verify(() => mockSwaggerRepository.generateSwaggerMockUseCase(invalidLink)).called(1);
-      verifyNoMoreInteractions(mockSwaggerRepository);
-    },
-  );
+    expect(result, isA<Failure>().having((e) => e.message, 'message', errorMessage));
+    verify(() => mockSwaggerRepository.generateSwaggerMockUseCase(invalidLink)).called(1);
+    verifyNoMoreInteractions(mockSwaggerRepository);
+  });
 }

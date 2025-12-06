@@ -23,7 +23,7 @@ void main() {
   const String validLink = 'https://swagger/v7.json';
   const String invalidLink = 'https://swagger/v.json';
 
-  test('Should return Swagger entity when remote datasource is called with a valid response', () async {
+  test('should return Swagger entity when getSwaggerLinkJsonData is called with valid link', () async {
     final response = SwaggerJsonResponse(openapi: "3.0.1", title: "apy API");
     when(
       () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink),
@@ -38,7 +38,7 @@ void main() {
     verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
   });
 
-  test('Should return Failure state when remoute datasource is called with an invalid reponse', () async {
+  test('should return Failure state when getSwaggerLinkJsonData is called with invalid link', () async {
     const errorMessage = 'something went wrong in parsing json';
     when(
       () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink),
@@ -53,7 +53,7 @@ void main() {
   });
 
   test(
-    'Should return MockedSwaggerEntity when remote datasource related function is called and returns valid response',
+    'should return MockedSwaggerEntity when generateSwaggerMockUseCase is called with valid link',
     () async {
       final MockedSwaggerResponse response = MockedSwaggerResponse(
         mockedBaseUrl: 'https://mockedserver.com/api/',
@@ -74,7 +74,7 @@ void main() {
   );
 
   test(
-    'Should return Failure state when call remote datasource generateMockSwagger with an invalid link',
+    'should return Failure state when generateSwaggerMockUseCase is called with invalid link',
     () async {
       const errorMessage = "Invalid link";
       when(
