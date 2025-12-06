@@ -1,9 +1,11 @@
+import 'package:injectable/injectable.dart';
 import 'package:mock_api_generator/core/usecase/usecase.dart';
 
 import '../../core/result/result.dart';
 import '../entities/swagger_entity.dart';
 import '../repositories/swagger_repository.dart';
 
+@injectable
 class GetSwaggerJsonUseCase extends UseCase<Result<SwaggerEntity>, String> {
   final SwaggerRepository _repository;
 
