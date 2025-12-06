@@ -72,4 +72,20 @@ void main() {
       expect((result).data?.mockedEndpoints, ['a', 'b']);
     },
   );
+
+  test(
+    'Should return Failure state when call remote datasource generateMockSwagger with an invalid link',
+    () async {
+      const errorMessage = "Invalid link";
+      when(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(invalidLink),
+      ).thenThrow(RequestExceptions(message: errorMessage));
+
+      final result = await swaggerRepositoryImpl.generateSwaggerMockUseCase(invalidLink);
+
+      expect(result, isA<Failure>().having((e) => e.message, 'message', errorMessage));
+      verify(() => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(invalidLink)).called(1);
+      verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
+    },
+  );
 }

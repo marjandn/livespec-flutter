@@ -28,8 +28,16 @@ class SwaggerRepositoryImpl extends SwaggerRepository {
 
   @override
   Future<Result<MockedSwaggerEntity>> generateSwaggerMockUseCase(String swaggerLink) async {
-    final result = await _swaggerRemoteDataSource.generateSwaggerMockUseCase(swaggerLink);
+    try {
+      final result = await _swaggerRemoteDataSource.generateSwaggerMockUseCase(swaggerLink);
 
-    return Success(result.toEntity());
+      return Success(result.toEntity());
+    } catch (e) {
+      return switch (e) {
+        JsonParsingException e => Failure(e.message),
+        RequestExceptions e => Failure(e.message),
+        _ => Failure('unknown exception $e'),
+      };
+    }
   }
 }
