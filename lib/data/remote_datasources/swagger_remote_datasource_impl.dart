@@ -30,6 +30,12 @@ class SwaggerRemoteDatasourceImpl implements SwaggerRemoteDataSource {
   Future<MockedSwaggerResponse> generateSwaggerMockUseCase(link) async {
     final result = await _client.post(Uri.parse('uri'), headers: {}, body: {link: link});
 
-    return MockedSwaggerResponse.fromJson(jsonDecode(result.body));
+    if (result.statusCode == 200) {
+      return MockedSwaggerResponse.fromJson(jsonDecode(result.body));
+    } else if (result.statusCode == 400) {
+      throw JsonParsingException(message: result.body);
+    }
+
+    throw RequestExceptions(message: result.body);
   }
 }

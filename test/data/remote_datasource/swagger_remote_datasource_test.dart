@@ -65,4 +65,16 @@ main() {
       isA<MockedSwaggerResponse>().having((e) => e.mockedBaseUrl, 'Base URL', 'https://sampleswagger.com'),
     );
   });
+
+  test('Should throw RequestException when generateSwaggerMock is called with an invalid link', () async {
+    const errorMessage = 'Invalid Link';
+    final mockClient = MockClient((request) async => Response(errorMessage, 500));
+    final swaggerRemoteDatasource = SwaggerRemoteDatasourceImpl(mockClient);
+
+    try {
+      await swaggerRemoteDatasource.generateSwaggerMockUseCase(invalidLink);
+    } catch (e) {
+      expect(e, isA<RequestExceptions>().having((e) => e.message, 'error Message', errorMessage));
+    }
+  });
 }
