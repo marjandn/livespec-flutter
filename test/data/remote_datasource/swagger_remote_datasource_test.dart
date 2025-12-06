@@ -8,6 +8,7 @@ import 'package:mock_api_generator/data/remote_datasources/swagger_remote_dataso
 
 main() {
   const String validLink = 'https://swagger/v7.json';
+  const String invalidLink = 'https://swagger/v.json';
 
   test('should return parsed Swagger model when link is valid', () async {
     final json = jsonEncode({"openapi": "3.0.1", "title": "api Api"});
@@ -22,12 +23,13 @@ main() {
 
   test('should throw ParseException when given invalid JSON data', () async {
     const errorMessage = 'Something went wrong';
-    final mockClient = MockClient((request) async => Response('Something went wrong', 500));
+    final mockClient = MockClient((request) async => Response(errorMessage, 500));
+    final swagerRemoteDataSource = SwaggerRemoteDatasourceImpl(mockClient);
 
     try {
-      SwaggerRemoteDatasourceImpl(mockClient);
+      await swagerRemoteDataSource.getSwaggerLinkJsonData(invalidLink);
     } catch (e) {
-      expect(e, isA<JsonParsingException>().having((e) => e.message, 'message', equals(errorMessage)));
+      expect(e, isA<JsonParsingException>().having((e) => e.message, 'message', errorMessage));
       expect((e as JsonParsingException).message, equals(errorMessage));
     }
   });
@@ -36,8 +38,10 @@ main() {
     const errorMessage = 'Invalid link';
     final mockClient = MockClient((request) async => Response('Invalid link', 400));
 
+    final swagerRemoteDataSource = SwaggerRemoteDatasourceImpl(mockClient);
+
     try {
-      SwaggerRemoteDatasourceImpl(mockClient);
+      await swagerRemoteDataSource.getSwaggerLinkJsonData(invalidLink);
     } catch (e) {
       expect(e, isA<RequestExceptions>().having((e) => e.message, 'message', equals(errorMessage)));
       expect((e as RequestExceptions).message, equals(errorMessage));

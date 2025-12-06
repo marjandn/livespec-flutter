@@ -16,19 +16,14 @@ class SwaggerRemoteDatasourceImpl implements SwaggerRemoteDataSource {
 
   @override
   Future<SwaggerJsonResponse> getSwaggerLinkJsonData(link) async {
-    try {
-      final result = await _client.get(Uri.parse(link));
+    final result = await _client.get(Uri.parse(link));
 
-      if (result.statusCode == 200) {
-        return SwaggerJsonResponse.fromJson(jsonDecode(result.body));
-      } else if (result.statusCode == 400) {
-        throw RequestExceptions(message: 'Invalid link');
-      } else {
-        throw JsonParsingException(message: result.body);
-      }
-    } catch (e) {
-      throw JsonParsingException(message: e.toString());
+    if (result.statusCode == 200) {
+      return SwaggerJsonResponse.fromJson(jsonDecode(result.body));
+    } else if (result.statusCode == 400) {
+      throw RequestExceptions(message: 'Invalid link');
     }
+    throw JsonParsingException(message: result.body);
   }
 
   @override
