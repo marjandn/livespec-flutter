@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_api_generator/core/exception/exceptions.dart';
 import 'package:mock_api_generator/core/result/result.dart';
+import 'package:mock_api_generator/data/models/mocked_swagger_response.dart';
 import 'package:mock_api_generator/data/models/swagger_json_response.dart';
 import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource.dart';
 import 'package:mock_api_generator/data/repositories/swagger_repository_impl.dart';
+import 'package:mock_api_generator/domain/entities/mocked_swagger_entity.dart';
 import 'package:mock_api_generator/domain/entities/swagger_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -20,9 +22,9 @@ void main() {
 
   const String validLink = 'https://swagger/v7.json';
   const String invalidLink = 'https://swagger/v.json';
-  final response = SwaggerJsonResponse(openapi: "3.0.1", title: "apy API");
 
   test('Should return Swagger entity when remote datasource is called with a valid response', () async {
+    final response = SwaggerJsonResponse(openapi: "3.0.1", title: "apy API");
     when(
       () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink),
     ).thenAnswer((_) async => response);
@@ -49,4 +51,25 @@ void main() {
     verify(() => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink)).called(1);
     verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
   });
+
+  test(
+    'Should return MockedSwaggerEntity when remote datasource related function is called and returns valid response',
+    () async {
+      final MockedSwaggerResponse response = MockedSwaggerResponse(
+        mockedBaseUrl: 'https://mockedserver.com/api/',
+        mockedEndpoints: ['a', 'b'],
+      );
+      when(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(validLink),
+      ).thenAnswer((_) async => response);
+
+      final result = await swaggerRepositoryImpl.generateSwaggerMockUseCase(validLink);
+
+      expect(result, isA<Success>().having((e) => e.data, 'data', isA<MockedSwaggerEntity>()));
+      verify(() => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(validLink)).called(1);
+      verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
+      expect((result as Success<MockedSwaggerEntity>).data?.mockedBaseUrl, 'https://mockedserver.com/api/');
+      expect((result).data?.mockedEndpoints, ['a', 'b']);
+    },
+  );
 }
