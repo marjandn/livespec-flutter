@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:mock_api_generator/core/result/result.dart';
+import 'package:mock_api_generator/domain/entities/mocked_swagger_entity.dart';
 import 'package:mock_api_generator/domain/entities/swagger_entity.dart';
 import 'package:mock_api_generator/domain/repositories/swagger_repository.dart';
 
@@ -13,10 +14,9 @@ class SwaggerRepositoryImpl extends SwaggerRepository {
   SwaggerRepositoryImpl(this._swaggerRemoteDataSource);
 
   @override
-  Future<Result<SwaggerEntity>> getSwaggerLinkJsonData(String link) async {
+  Future<Result<SwaggerEntity>> getSwaggerLinkJsonData(String swaggerLink) async {
     try {
-      final result = await _swaggerRemoteDataSource.getSwaggerLinkJsonData(link);
-
+      final result = await _swaggerRemoteDataSource.getSwaggerLinkJsonData(swaggerLink);
       return Success(result.toEntity());
     } catch (e) {
       return switch (e) {
@@ -24,5 +24,12 @@ class SwaggerRepositoryImpl extends SwaggerRepository {
         _ => Failure('unknown exception $e'),
       };
     }
+  }
+
+  @override
+  Future<Result<MockedSwaggerEntity>> generateSwaggerMockUseCase(String swaggerLink) async {
+    final result = await _swaggerRemoteDataSource.generateSwaggerMockUseCase(swaggerLink);
+
+    return Success(result.toEntity());
   }
 }

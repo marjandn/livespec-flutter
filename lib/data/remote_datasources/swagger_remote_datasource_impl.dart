@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
+import 'package:mock_api_generator/data/models/mocked_swagger_response.dart';
 import 'package:mock_api_generator/data/models/swagger_json_response.dart';
 import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource.dart';
 import 'package:http/http.dart' as http;
@@ -23,12 +24,17 @@ class SwaggerRemoteDatasourceImpl implements SwaggerRemoteDataSource {
       } else if (result.statusCode == 400) {
         throw RequestExceptions(message: 'Invalid link');
       } else {
-        final m = result.body.toString();
-
-        throw JsonParsingException(message: m);
+        throw JsonParsingException(message: result.body);
       }
     } catch (e) {
       throw JsonParsingException(message: e.toString());
     }
+  }
+
+  @override
+  Future<MockedSwaggerResponse> generateSwaggerMockUseCase(link) async {
+    final result = await _client.post(Uri.parse('uri'), headers: {}, body: {link: link});
+
+    return MockedSwaggerResponse.fromJson(jsonDecode(result.body));
   }
 }
