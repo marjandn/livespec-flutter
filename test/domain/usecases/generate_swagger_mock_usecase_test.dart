@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_api_generator/core/result/result.dart';
 import 'package:mock_api_generator/domain/entities/mocked_swagger_entity.dart' show MockedSwaggerEntity;

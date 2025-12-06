@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_api_generator/core/result/result.dart';
 import 'package:mock_api_generator/domain/entities/swagger_entity.dart';
