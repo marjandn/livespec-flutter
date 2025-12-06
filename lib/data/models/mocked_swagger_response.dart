@@ -8,7 +8,7 @@ class MockedSwaggerResponse {
 
   MockedSwaggerResponse.fromJson(Map<String, dynamic> json)
     : mockedBaseUrl = json['mockedBaseUrl'],
-      mockedEndpoints = json['mockedEndpoints'];
+      mockedEndpoints = List<String>.from(json['mockedEndpoints']);
 
   MockedSwaggerEntity toEntity() =>
       MockedSwaggerEntity(mockedBaseUrl: mockedBaseUrl ?? '', mockedEndpoints: mockedEndpoints ?? []);

@@ -4,7 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:mock_api_generator/core/exception/exceptions.dart';
+import 'package:mock_api_generator/data/models/mocked_swagger_response.dart';
 import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource_impl.dart';
+import 'package:mocktail/mocktail.dart';
 
 main() {
   const String validLink = 'https://swagger/v7.json';
@@ -46,5 +48,21 @@ main() {
       expect(e, isA<RequestExceptions>().having((e) => e.message, 'message', equals(errorMessage)));
       expect((e as RequestExceptions).message, equals(errorMessage));
     }
+  });
+
+  test('Should return MockSwaggerResponse when remote datasource is called with valid link', () async {
+    final response = jsonEncode({
+      'mockedBaseUrl': 'https://sampleswagger.com',
+      'mockedEndpoints': ['a', 'b'],
+    });
+    final mockClient = MockClient((request) async => Response(response, 200));
+    final swaggerRemoteDatasource = SwaggerRemoteDatasourceImpl(mockClient);
+
+    final result = await swaggerRemoteDatasource.generateSwaggerMockUseCase(validLink);
+
+    expect(
+      result,
+      isA<MockedSwaggerResponse>().having((e) => e.mockedBaseUrl, 'Base URL', 'https://sampleswagger.com'),
+    );
   });
 }
