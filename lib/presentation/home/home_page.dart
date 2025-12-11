@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mock_api_generator/domain/usecases/generate_swagger_mock_usecase.dart';
 
-import '../../domain/usecases/get_swagger_json_usecase.dart';
 import '../../injectable_config.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  late final GetSwaggerJsonUseCase _getSwaggerJsonUseCase = getIt<GetSwaggerJsonUseCase>();
+  late final GenerateSwaggerMockUsecase _getSwaggerJsonUseCase = getIt<GenerateSwaggerMockUsecase>();
   final TextEditingController _textController = TextEditingController();
 
   @override

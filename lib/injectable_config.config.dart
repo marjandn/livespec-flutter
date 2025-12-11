@@ -12,13 +12,19 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:http/http.dart' as _i519;
 import 'package:injectable/injectable.dart' as _i526;
-
-import 'core/di/network_module.dart' as _i177;
-import 'data/remote_datasources/swagger_remote_datasource.dart' as _i666;
-import 'data/remote_datasources/swagger_remote_datasource_impl.dart' as _i315;
-import 'data/repositories/swagger_repository_impl.dart' as _i37;
-import 'domain/repositories/swagger_repository.dart' as _i317;
-import 'domain/usecases/get_swagger_json_usecase.dart' as _i817;
+import 'package:mock_api_generator/core/di/network_module.dart' as _i434;
+import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource.dart'
+    as _i1018;
+import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource_impl.dart'
+    as _i801;
+import 'package:mock_api_generator/data/repositories/swagger_repository_impl.dart'
+    as _i654;
+import 'package:mock_api_generator/domain/repositories/swagger_repository.dart'
+    as _i955;
+import 'package:mock_api_generator/domain/usecases/generate_swagger_mock_usecase.dart'
+    as _i161;
+import 'package:mock_api_generator/domain/usecases/get_swagger_json_usecase.dart'
+    as _i563;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -29,17 +35,20 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final networkModule = _$NetworkModule();
     gh.lazySingleton<_i519.Client>(() => networkModule.client);
-    gh.lazySingleton<_i666.SwaggerRemoteDataSource>(
-      () => _i315.SwaggerRemoteDatasourceImpl(gh<_i519.Client>()),
+    gh.lazySingleton<_i1018.SwaggerRemoteDataSource>(
+      () => _i801.SwaggerRemoteDatasourceImpl(gh<_i519.Client>()),
     );
-    gh.lazySingleton<_i317.SwaggerRepository>(
-      () => _i37.SwaggerRepositoryImpl(gh<_i666.SwaggerRemoteDataSource>()),
+    gh.lazySingleton<_i955.SwaggerRepository>(
+      () => _i654.SwaggerRepositoryImpl(gh<_i1018.SwaggerRemoteDataSource>()),
     );
-    gh.factory<_i817.GetSwaggerJsonUseCase>(
-      () => _i817.GetSwaggerJsonUseCase(gh<_i317.SwaggerRepository>()),
+    gh.factory<_i563.GetSwaggerJsonUseCase>(
+      () => _i563.GetSwaggerJsonUseCase(gh<_i955.SwaggerRepository>()),
+    );
+    gh.factory<_i161.GenerateSwaggerMockUsecase>(
+      () => _i161.GenerateSwaggerMockUsecase(gh<_i955.SwaggerRepository>()),
     );
     return this;
   }
 }
 
-class _$NetworkModule extends _i177.NetworkModule {}
+class _$NetworkModule extends _i434.NetworkModule {}
