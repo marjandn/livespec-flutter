@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           onTest: () => _testEndpoint(endpoint.path),
                         );
-                      }).toList(),
+                      }),
                   ],
                 ),
               ),
