@@ -1,5 +1,10 @@
 # Mock API Generator (Flutter)
 
+## Demo
+
+https://github.com/user-attachments/assets/9ee1b850-3edd-42e7-be21-896c6cf01cf5
+
+
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.10+-0175C2?logo=dart&logoColor=white)](https://dart.dev/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](./LICENSE)
