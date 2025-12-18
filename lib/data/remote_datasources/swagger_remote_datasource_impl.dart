@@ -27,9 +27,9 @@ class SwaggerRemoteDatasourceImpl implements SwaggerRemoteDataSource {
   }
 
   @override
-  Future<MockedSwaggerResponse> generateSwaggerMockUseCase(link) async {
+  Future<MockedSwaggerResponse> generateSwaggerMock(link) async {
     final result = await _client.post(
-      Uri.parse('https://mock-api-generator-server.onrender.com/load-swagger'),
+      Uri.parse('https://mock-api-generator-server.onrender.com/load-swagger?page=1&limit=10'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({"url": link}),
     );

@@ -3,5 +3,5 @@ import '../models/swagger_json_response.dart';
 
 abstract class SwaggerRemoteDataSource {
   Future<SwaggerJsonResponse> getSwaggerLinkJsonData(link);
-  Future<MockedSwaggerResponse> generateSwaggerMockUseCase(link);
+  Future<MockedSwaggerResponse> generateSwaggerMock(link);
 }

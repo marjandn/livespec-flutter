@@ -9,13 +9,14 @@ import 'package:mock_api_generator/domain/entities/mocked_swagger_entity.dart';
 import 'package:mock_api_generator/domain/entities/swagger_entity.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockSwaggerRemoteDataSource extends Mock implements SwaggerRemoteDataSource {}
+class MockSwaggerRemoteDataSource extends Mock
+    implements SwaggerRemoteDataSource {}
 
 void main() {
   late MockSwaggerRemoteDataSource mockSwaggerRemoteDataSource;
   late SwaggerRepositoryImpl swaggerRepositoryImpl;
 
-  setUp(() {
+  setUpAll(() {
     mockSwaggerRemoteDataSource = MockSwaggerRemoteDataSource();
     swaggerRepositoryImpl = SwaggerRepositoryImpl(mockSwaggerRemoteDataSource);
   });
@@ -23,53 +24,77 @@ void main() {
   const String validLink = 'https://swagger/v7.json';
   const String invalidLink = 'https://swagger/v.json';
 
-  test('should return Swagger entity when getSwaggerLinkJsonData is called with valid link', () async {
-    final response = SwaggerJsonResponse(openapi: "3.0.1", title: "apy API");
-    when(
-      () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink),
-    ).thenAnswer((_) async => response);
+  test(
+    'should return Swagger entity when getSwaggerLinkJsonData is called with valid link',
+    () async {
+      final response = SwaggerJsonResponse(openapi: "3.0.1", title: "apy API");
+      when(
+        () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink),
+      ).thenAnswer((_) async => response);
 
-    final result = await swaggerRepositoryImpl.getSwaggerLinkJsonData(validLink);
+      final result = await swaggerRepositoryImpl.getSwaggerLinkJsonData(
+        validLink,
+      );
 
-    expect(result, isA<Success>());
-    expect((result as Success<SwaggerEntity>).data?.openapi, '3.0.1');
-    expect(result.data?.title, 'apy API');
-    verify(() => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink)).called(1);
-    verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
-  });
+      expect(result, isA<Success>());
+      expect((result as Success<SwaggerEntity>).data?.openapi, '3.0.1');
+      expect(result.data?.title, 'apy API');
+      verify(
+        () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(validLink),
+      ).called(1);
+      verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
+    },
+  );
 
-  test('should return Failure state when getSwaggerLinkJsonData is called with invalid link', () async {
-    const errorMessage = 'something went wrong in parsing json';
-    when(
-      () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink),
-    ).thenThrow(JsonParsingException(message: errorMessage));
+  test(
+    'should return Failure state when getSwaggerLinkJsonData is called with invalid link',
+    () async {
+      const errorMessage = 'something went wrong in parsing json';
+      when(
+        () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink),
+      ).thenThrow(JsonParsingException(message: errorMessage));
 
-    final result = await swaggerRepositoryImpl.getSwaggerLinkJsonData(invalidLink);
+      final result = await swaggerRepositoryImpl.getSwaggerLinkJsonData(
+        invalidLink,
+      );
 
-    expect(result, isA<Failure>());
-    expect((result as Failure).message, errorMessage);
-    verify(() => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink)).called(1);
-    verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
-  });
+      expect(result, isA<Failure>());
+      expect((result as Failure).message, errorMessage);
+      verify(
+        () => mockSwaggerRemoteDataSource.getSwaggerLinkJsonData(invalidLink),
+      ).called(1);
+      verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
+    },
+  );
 
   test(
     'should return MockedSwaggerEntity when generateSwaggerMockUseCase is called with valid link',
     () async {
       final MockedSwaggerResponse response = MockedSwaggerResponse(
-        mockedBaseUrl: 'https://mockedserver.com/api/',
-        mockedEndpoints: ['a', 'b'],
+        mockBaseUrl: 'https://mockedserver.com/api/',
       );
       when(
-        () => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(validLink),
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(validLink),
       ).thenAnswer((_) async => response);
 
-      final result = await swaggerRepositoryImpl.generateSwaggerMockUseCase(validLink);
+      final result = await swaggerRepositoryImpl.generateSwaggerMock(validLink);
 
-      expect(result, isA<Success>().having((e) => e.data, 'data', isA<MockedSwaggerEntity>()));
-      verify(() => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(validLink)).called(1);
+      expect(
+        result,
+        isA<Success>().having(
+          (e) => e.data,
+          'data',
+          isA<MockedSwaggerEntity>(),
+        ),
+      );
+      verify(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(validLink),
+      ).called(1);
       verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
-      expect((result as Success<MockedSwaggerEntity>).data?.mockedBaseUrl, 'https://mockedserver.com/api/');
-      expect((result).data?.mockedEndpoints, ['a', 'b']);
+      expect(
+        (result as Success<MockedSwaggerEntity>).data?.mockedBaseUrl,
+        'https://mockedserver.com/api/',
+      );
     },
   );
 
@@ -78,13 +103,20 @@ void main() {
     () async {
       const errorMessage = "Invalid link";
       when(
-        () => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(invalidLink),
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(invalidLink),
       ).thenThrow(RequestExceptions(message: errorMessage));
 
-      final result = await swaggerRepositoryImpl.generateSwaggerMockUseCase(invalidLink);
+      final result = await swaggerRepositoryImpl.generateSwaggerMock(
+        invalidLink,
+      );
 
-      expect(result, isA<Failure>().having((e) => e.message, 'message', errorMessage));
-      verify(() => mockSwaggerRemoteDataSource.generateSwaggerMockUseCase(invalidLink)).called(1);
+      expect(
+        result,
+        isA<Failure>().having((e) => e.message, 'message', errorMessage),
+      );
+      verify(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(invalidLink),
+      ).called(1);
       verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
     },
   );

@@ -12,5 +12,5 @@ class GenerateSwaggerMockUsecase extends UseCase<Result<MockedSwaggerEntity>, St
 
   @override
   Future<Result<MockedSwaggerEntity>> call(String link) =>
-      _swaggerRepository.generateSwaggerMockUseCase(link);
+      _swaggerRepository.generateSwaggerMock(link);
 }
