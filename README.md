@@ -1,4 +1,5 @@
-# Mock API Generator (Flutter)
+# LiveSpec is not just a mock generator.
+It’s an attempt to treat OpenAPI as a living contract instead of a static file.
 
 ## Demo
 
