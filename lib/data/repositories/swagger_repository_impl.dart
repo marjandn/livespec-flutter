@@ -14,9 +14,13 @@ class SwaggerRepositoryImpl extends SwaggerRepository {
   SwaggerRepositoryImpl(this._swaggerRemoteDataSource);
 
   @override
-  Future<Result<SwaggerEntity>> getSwaggerLinkJsonData(String swaggerLink) async {
+  Future<Result<SwaggerEntity>> getSwaggerLinkJsonData(
+    String swaggerLink,
+  ) async {
     try {
-      final result = await _swaggerRemoteDataSource.getSwaggerLinkJsonData(swaggerLink);
+      final result = await _swaggerRemoteDataSource.getSwaggerLinkJsonData(
+        swaggerLink,
+      );
       return Success(result.toEntity());
     } catch (e) {
       return switch (e) {
@@ -27,9 +31,13 @@ class SwaggerRepositoryImpl extends SwaggerRepository {
   }
 
   @override
-  Future<Result<MockedSwaggerEntity>> generateSwaggerMock(String swaggerLink) async {
+  Future<Result<MockedSwaggerEntity>> generateSwaggerMock(
+    String swaggerLink,
+  ) async {
     try {
-      final result = await _swaggerRemoteDataSource.generateSwaggerMock(swaggerLink);
+      final result = await _swaggerRemoteDataSource.generateSwaggerMock(
+        swaggerLink,
+      );
 
       return Success(result.toEntity());
     } catch (e) {

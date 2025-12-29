@@ -24,7 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final GenerateSwaggerMockUsecase _getSwaggerJsonUseCase =
       getIt<GenerateSwaggerMockUsecase>();
-  final TextEditingController _textController = TextEditingController();
+ 
+  final TextEditingController _textController = TextEditingController(text: 'https://petstore3.swagger.io/api/v3/openapi.json');
   final EndpointTestService _endpointTestService = const EndpointTestService();
   bool _isLoading = false;
   MockedSwaggerEntity? _mockedData;
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> {
         _mockedData = result.data;
         _errorMessage = null;
       } else if (result is Failure<MockedSwaggerEntity>) {
+        debugPrint(result.message);
         _errorMessage = result.message ?? 'An error occurred';
         _mockedData = null;
       } else {

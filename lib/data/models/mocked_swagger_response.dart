@@ -194,7 +194,7 @@ class SummaryInfo {
   bool? hasParameters;
   bool? hasRequestBody;
   ParameterCount? parameterCount;
-  List<String>? requiredParameters;
+  List<RequiredParameterInfo>? requiredParameters;
   bool? requestBodyRequired;
   List<String>? requestBodyContentTypes;
   List<String>? responseStatusCodes;
@@ -215,11 +215,19 @@ class SummaryInfo {
     parameterCount = json['parameterCount'] != null
         ? ParameterCount.fromJson(json['parameterCount'])
         : null;
-    if (json['requiredParameters'] != null) {
-      requiredParameters = <String>[];
-      json['requiredParameters'].forEach((v) {
-        requiredParameters!.add(v);
-      });
+    final requiredParamsJson = json['requiredParameters'];
+    if (requiredParamsJson is List) {
+      requiredParameters = <RequiredParameterInfo>[];
+      for (final v in requiredParamsJson) {
+        if (v is Map<String, dynamic>) {
+          requiredParameters!.add(RequiredParameterInfo.fromJson(v));
+        } else if (v is String) {
+          // Backwards-compatible: some responses may return ["petId", ...]
+          requiredParameters!.add(
+            RequiredParameterInfo(name: v, inType: '', type: ''),
+          );
+        }
+      }
     }
     requestBodyRequired = json['requestBodyRequired'];
     if (json['requestBodyContentTypes'] != null) {
@@ -247,10 +255,30 @@ class SummaryInfo {
               cookie: 0,
               total: 0,
             ),
-        requiredParameters: requiredParameters ?? [],
+        requiredParameters: requiredParameters?.map((e) => e.toEntity()).toList() ?? [],
         requestBodyRequired: requestBodyRequired ?? false,
         requestBodyContentTypes: requestBodyContentTypes ?? [],
         responseStatusCodes: responseStatusCodes ?? [],
+      );
+}
+
+class RequiredParameterInfo {
+  String? name;
+  String? inType;
+  String? type;
+
+  RequiredParameterInfo({this.name, this.inType, this.type});
+
+  RequiredParameterInfo.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    inType = json['in'];
+    type = json['type'];
+  }
+
+  RequiredParameterEntity toEntity() => RequiredParameterEntity(
+        name: name ?? '',
+        inType: inType ?? '',
+        type: type ?? '',
       );
 }
 
@@ -435,7 +463,7 @@ class RequestBodyResponse {
   bool? required;
   String? description;
   Map<String, ContentTypeInfo>? contentTypes;
-  Map<String, dynamic>? example;
+  dynamic example;
 
   RequestBodyResponse({
     this.required,
@@ -450,7 +478,9 @@ class RequestBodyResponse {
     if (json['contentTypes'] != null) {
       contentTypes = <String, ContentTypeInfo>{};
       json['contentTypes'].forEach((key, value) {
-        contentTypes![key] = ContentTypeInfo.fromJson(value);
+        if (value is Map<String, dynamic>) {
+          contentTypes![key] = ContentTypeInfo.fromJson(value);
+        }
       });
     }
     example = json['example'];
@@ -468,7 +498,7 @@ class RequestBodyResponse {
 
 class ContentTypeInfo {
   SchemaResponse? schema;
-  Map<String, dynamic>? generatedExample;
+  dynamic generatedExample;
 
   ContentTypeInfo({this.schema, this.generatedExample});
 

@@ -72,7 +72,7 @@ class SummaryEntity {
   final bool hasParameters;
   final bool hasRequestBody;
   final ParameterCountEntity parameterCount;
-  final List<String> requiredParameters;
+  final List<RequiredParameterEntity> requiredParameters;
   final bool requestBodyRequired;
   final List<String> requestBodyContentTypes;
   final List<String> responseStatusCodes;
@@ -85,6 +85,18 @@ class SummaryEntity {
     required this.requestBodyRequired,
     required this.requestBodyContentTypes,
     required this.responseStatusCodes,
+  });
+}
+
+class RequiredParameterEntity {
+  final String name;
+  final String inType;
+  final String type;
+
+  RequiredParameterEntity({
+    required this.name,
+    required this.inType,
+    required this.type,
   });
 }
 
@@ -146,7 +158,7 @@ class RequestBodyEntity {
   final bool required;
   final String description;
   final Map<String, ContentTypeEntity> contentTypes;
-  final Map<String, dynamic>? example;
+  final dynamic example;
 
   RequestBodyEntity({
     required this.required,
@@ -158,7 +170,7 @@ class RequestBodyEntity {
 
 class ContentTypeEntity {
   final SchemaEntity schema;
-  final Map<String, dynamic>? generatedExample;
+  final dynamic generatedExample;
 
   ContentTypeEntity({
     required this.schema,

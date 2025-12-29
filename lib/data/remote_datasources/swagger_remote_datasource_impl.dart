@@ -29,7 +29,7 @@ class SwaggerRemoteDatasourceImpl implements SwaggerRemoteDataSource {
   @override
   Future<MockedSwaggerResponse> generateSwaggerMock(link) async {
     final result = await _client.post(
-      Uri.parse('https://mock-api-generator-server.onrender.com/load-swagger?page=1&limit=10'),
+      Uri.parse('https://mock-api-generator-server.onrender.com/load-swagger?page=1&limit=20'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({"url": link}),
     );
