@@ -10,6 +10,6 @@ class SwaggerLocalDatasourceImpl implements SwaggerLocalDatasource {
   Future<void> saveMockedSwaggerModel(
     MockedSwaggerResponse mockedSwaggerResponse,
   ) async {
-    throw UnimplementedError();
+    
   }
 } 

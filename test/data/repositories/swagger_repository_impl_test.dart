@@ -1,4 +1,3 @@
- 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_api_generator/core/exception/exceptions.dart';
 import 'package:mock_api_generator/core/result/result.dart';
@@ -147,6 +146,21 @@ void main() {
       verify(
         () => mockSwaggerLocalDataSource.saveMockedSwaggerModel(response),
       ).called(1);
+    },
+  );
+
+  test(
+    'should skip saving mocked data in local database if generateSwaggerMockUseCase failed',
+    () async {
+      final response = MockedSwaggerResponse();
+      when(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(invalidLink),
+      ).thenThrow(RequestExceptions(message: 'Something went wrong'));
+      when(() => mockSwaggerLocalDataSource.saveMockedSwaggerModel(response)).thenAnswer((_) async => {});
+
+      final result = await swaggerRepositoryImpl.generateSwaggerMock(invalidLink);
+ 
+      verifyZeroInteractions(mockSwaggerLocalDataSource);
     },
   );
 }

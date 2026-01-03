@@ -6,6 +6,7 @@ import 'package:mock_api_generator/domain/repositories/swagger_repository.dart';
 
 import '../../core/exception/exceptions.dart';
 import '../local_datasource/swagger_local_datasource.dart';
+import '../models/mocked_swagger_response.dart';
 import '../remote_datasources/swagger_remote_datasource.dart';
 
 @LazySingleton(as: SwaggerRepository)
