@@ -1,6 +1,8 @@
+ 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_api_generator/core/exception/exceptions.dart';
 import 'package:mock_api_generator/core/result/result.dart';
+import 'package:mock_api_generator/data/local_datasource/swagger_local_datasource.dart';
 import 'package:mock_api_generator/data/models/mocked_swagger_response.dart';
 import 'package:mock_api_generator/data/models/swagger_json_response.dart';
 import 'package:mock_api_generator/data/remote_datasources/swagger_remote_datasource.dart';
@@ -12,13 +14,21 @@ import 'package:mocktail/mocktail.dart';
 class MockSwaggerRemoteDataSource extends Mock
     implements SwaggerRemoteDataSource {}
 
+class MockSwaggerLocalDataSource extends Mock
+    implements SwaggerLocalDatasource {}
+
 void main() {
   late MockSwaggerRemoteDataSource mockSwaggerRemoteDataSource;
+  late MockSwaggerLocalDataSource mockSwaggerLocalDataSource;
   late SwaggerRepositoryImpl swaggerRepositoryImpl;
 
   setUpAll(() {
     mockSwaggerRemoteDataSource = MockSwaggerRemoteDataSource();
-    swaggerRepositoryImpl = SwaggerRepositoryImpl(mockSwaggerRemoteDataSource);
+    mockSwaggerLocalDataSource = MockSwaggerLocalDataSource();
+    swaggerRepositoryImpl = SwaggerRepositoryImpl(
+      mockSwaggerRemoteDataSource,
+      mockSwaggerLocalDataSource,
+    );
   });
 
   const String validLink = 'https://swagger/v7.json';
@@ -118,6 +128,25 @@ void main() {
         () => mockSwaggerRemoteDataSource.generateSwaggerMock(invalidLink),
       ).called(1);
       verifyNoMoreInteractions(mockSwaggerRemoteDataSource);
+    },
+  );
+
+  test(
+    'should save mocked swagger model sucessfully when generateSwaggerMockUseCase is called with valid link',
+    () async {
+      final response = MockedSwaggerResponse(
+        mockBaseUrl: 'https://mockedserver.com/api/',
+      );
+      when(
+        () => mockSwaggerRemoteDataSource.generateSwaggerMock(validLink),
+      ).thenAnswer((invocation) async => response);
+
+      final Result<MockedSwaggerEntity> result = await swaggerRepositoryImpl
+          .generateSwaggerMock(validLink);
+
+      verify(
+        () => mockSwaggerLocalDataSource.saveMockedSwaggerModel(response),
+      ).called(1);
     },
   );
 }

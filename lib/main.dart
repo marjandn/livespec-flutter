@@ -5,6 +5,7 @@ import 'package:mock_api_generator/presentation/home/home_page.dart';
 
 void main() {
   configureDependencies();
+  
   runApp(const MyApp());
 }
 
